@@ -1,7 +1,7 @@
 <template>
 	<div id="app">
     <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-      <el-tab-pane label="信息管理" name="first">
+      <el-tab-pane label="备忘录" name="first">
         <el-row :gutter="20">
           <el-col :span="15">
             <el-input placeholder="请输入内容"
@@ -38,7 +38,7 @@
       </el-tab-pane>
       
       <el-tab-pane label="书签管理" name="third">角色管理</el-tab-pane>
-      <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>
+      <el-tab-pane label="云笔记" name="fourth">定时任务补偿</el-tab-pane>
       <el-tab-pane label="权限管理" name="second">
         <login></login>
       </el-tab-pane>
