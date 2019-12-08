@@ -1,36 +1,52 @@
 <template>
 	<div id="app">
-		<p class="text-center app-title">Easy Todo</p>
-		<el-row :gutter="20">
-			<el-col :span="21">
-				<el-input placeholder="请输入内容"
-						  v-model="content"
-						  class="top-input"
-						  @keyup.enter.native="doConfirm(content)"
-						  :class="selectClass"
-						  icon="edit"
-						  :on-icon-click="showTextArea">
-					<el-select v-model="selectClass" slot="prepend">
-						<el-option label="记录" value="a_info"></el-option>
-						<el-option label="重要" value="b_important"></el-option>
-						<el-option label="紧急" value="c_urgency"></el-option>
-					</el-select>
-				</el-input>
-			</el-col>
-			<el-col :span="3">
-				<el-button type="primary" @click="doConfirm(content)" style="width: 100%">确 定</el-button>
-			</el-col>
-		</el-row>
+    <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+      <el-tab-pane label="信息管理" name="first">
+        <el-row :gutter="20">
+          <el-col :span="15">
+            <el-input placeholder="请输入内容"
+                  v-model="content"
+                  class="top-input"
+                  @keyup.enter.native="doConfirm(content)"
+                  :class="selectClass"
+                  icon="edit"
+                  :on-icon-click="showTextArea">
+              <el-select v-model="selectClass" slot="prepend">
+                <el-option label="记录" value="a_info"></el-option>
+                <el-option label="重要" value="b_important"></el-option>
+                <el-option label="紧急" value="c_urgency"></el-option>
+              </el-select>
+            </el-input>
+          </el-col>
+          <el-col :span="3">
+            <el-button type="success" @click="upload(content)" style="width: 100%">上传</el-button>
+          </el-col>
+          <el-col :span="3">
+            <el-button type="danger" @click="download(content)" style="width: 100%">下载</el-button>
+          </el-col>
+          <el-col :span="3">
+            <el-button type="primary" @click="doConfirm(content)" style="width: 100%">确 定</el-button>
+          </el-col>
+        </el-row>
 
-		<el-row type="flex" justify="space-between" :gutter="20" style="margin-top: 20px">
-			<el-col :span="8" v-for="(v, k) in store">
-				<todo-item :type="k" :data="v"></todo-item>
-			</el-col>
-		</el-row>
+        <el-row type="flex" justify="space-between" :gutter="20" style="margin-top: 20px" v-if="show">
+          <el-col :span="8" v-for="(v, k) in store">
+            <todo-item :type="k" :data="v"></todo-item>
+          </el-col>
+        </el-row>
 
-		<div class="text-right text" style="margin-top: 15px">
-			本插件已开源至 <a href="http://github.com/lavyun/Easy-todo" target="_blank" style="color: #20a0ff;outline: none">lavyun / Easy-todo</a>
-		</div>
+      </el-tab-pane>
+      
+      <el-tab-pane label="书签管理" name="third">角色管理</el-tab-pane>
+      <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>
+      <el-tab-pane label="权限管理" name="second">
+        <login></login>
+      </el-tab-pane>
+    </el-tabs>
+
+    <div class="text-right text" style="margin-top: 15px">
+      本插件已开源至 <a href="http://github.com/lflxp/Easy-todo" target="_blank" style="color: #20a0ff;outline: none">lflxp / Easy-todo</a>
+    </div>
 
 		<el-dialog title="输入待办事项" :visible.sync="dialogVisible" size="large">
 			<el-input
@@ -49,15 +65,19 @@
 
 <script>
 	import TodoItem from './components/TodoItem'
+	import Login from './components/Login'
 	import storage from './storage'
 
 	export default {
 		name: 'app',
 		components: {
-			TodoItem
+      TodoItem,
+      Login
 		},
 		data() {
 			return {
+        show: true,
+        activeName: 'first',
 				selectClass: 'a_info',
 				content: '',
 				textarea: '',
@@ -82,6 +102,37 @@
 			this.init()
 		},
 		methods: {
+      upload() {
+        console.log('upload')
+        storage.get('easyTodoStorage').then(rs => {
+          alert(JSON.stringify(rs))
+          let bg = chrome.extension.getBackgroundPage()
+          let github = new bg.Github()
+          github.updateTodo('todo/create',rs)
+          this.$message({
+            type:'success',
+            message: '同步上传成功'
+          })
+        })
+      },
+      download() {
+        let bg = chrome.extension.getBackgroundPage()
+        let github = new bg.Github()
+        github.getTodo('todo/create',storage)
+        this.show = false
+        this.$nextTick(()=>{
+          this.init()
+          this.show = true
+        })
+          
+        this.$message({
+          type:'success',
+          message: '下载同步完成'
+        })
+      },
+      handleClick(tab, event) {
+        console.log(tab, event);
+      },
 			init(){
 				storage.get('easyTodoStorage').then(rs => {
 					this.$set(this.$data, 'store', rs || {

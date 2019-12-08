@@ -1,3 +1,20 @@
+function getDate() {
+  let myDate = new Date()
+  let year = myDate.getFullYear()
+  let month = myDate.getMonth() + 1
+  let date = myDate.getDate()
+  let h = myDate.getHours()
+  let m = myDate.getMinutes()
+  let s = myDate.getSeconds()
+  let now = year + '-' + conver(month) + '-' + conver(date) + ' ' + conver(h) + ':' + conver(m) + ':' + conver(s)
+  return now
+}
+
+//日期时间处理
+function conver(s) {
+  return s < 10 ? '0' + s : s
+}
+
 function Github() {
   this.user = ''
   this.repos = ''
@@ -55,7 +72,7 @@ function Github() {
         .catch((error) => {
           chrome.notifications.create(null, {
             type: 'basic',
-            iconUrl: 'img/icon.png',
+            iconUrl: 'images/icon16.png',
             title: '初始化' + filepath + '目录',
             message: error
           })
@@ -136,13 +153,117 @@ function Github() {
             } finally {
               chrome.notifications.create(null, {
                 type: 'basic',
-                iconUrl: 'img/icon.png',
+                iconUrl: 'images/icon16.png',
                 title: '更新本地书签',
                 message: '同步完成 '
               })
             }
           })
       })
+    })
+  }
+
+    // 远程加载
+    this.getTodo = function (filepath,storage) {
+      chrome.storage.local.get(this.key, function (result) {
+        this.url = 'https://api.github.com'
+        this.user = result.username
+        this.repos = result.repos
+        this.token = result.token
+        this.headers = { 'Authorization': 'token ' + this.token, 'Content-type': 'application/json' }
+        if (this.user === '' || this.user === undefined) {
+          alert('未配置认证信息')
+          return
+        }
+
+        fetch(this.url + '/repos/' + this.user + '/' + this.repos + '/contents/' + filepath, {
+          method: 'GET',
+          headers: new Headers({
+            'Content-Type': 'application/json',
+            'Authorization': 'token ' + this.token
+          })
+        }).then(res => res.json())
+          .catch(error => console.error('Error:', error))
+          .then((result) => {
+            let info = JSON.parse(decodeURIComponent(window.atob(result['content'])))
+
+            try {
+              storage.set({
+                easyTodoStorage: info
+              })
+            } catch (e) {
+              // do nothing
+            } finally {
+              chrome.notifications.create(null, {
+                type: 'basic',
+                iconUrl: 'images/icon16.png',
+                title: '更新本地书签',
+                message: '同步完成 '
+              })
+            }
+          })
+      })
+    }
+
+  // todo 远程同步TODOLIST
+  this.updateTodo = function (filepath, message) {
+    let _this = this
+    chrome.storage.local.get(this.key, function (result) {
+      // _this.create(filepath)
+      let _this2 = this
+      this.url = 'https://api.github.com'
+      this.user = result.username
+      this.repos = result.repos
+      this.token = result.token
+      if (this.user === '' || this.user === undefined) {
+        alert('user is nil')
+        return
+      }
+
+      var urls = this.url + '/repos/' + this.user + '/' + this.repos + '/contents/' + filepath
+
+      fetch(urls, {
+        method: 'GET',
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          'Authorization': 'token ' + this.token
+        })
+      }).then(res => res.json())
+        .catch(error => console.error('Error:', error))
+        .then((result) => {
+          console.log('github get success' + JSON.stringify(result), result['sha'])
+          // chrome.bookmarks.getChildren('1',(re) => {
+          var data = {
+            'message': '全量同步todo ' + getDate(),
+            'content': window.btoa(encodeURIComponent(JSON.stringify(message))),
+            'sha': result['sha']
+          }
+
+          fetch(urls, {
+            method: 'PUT',
+            body: JSON.stringify(data),
+            headers: new Headers({
+              'Content-Type': 'application/json',
+              'Authorization': 'token ' + _this2.token
+            })
+          }).then(res => res.json())
+            .catch((error) => {
+              chrome.notifications.create(null, {
+                type: 'basic',
+                iconUrl: 'images/icon16.png',
+                title: '上传全量书签错误',
+                message: error
+              })
+            })
+            .then((response) => {
+              chrome.notifications.create(null, {
+                type: 'basic',
+                iconUrl: 'images/icon16.png',
+                title: '上传全量书签',
+                message: '成功'
+              })
+            })
+        })
     })
   }
 
@@ -197,7 +318,7 @@ function Github() {
               .catch((error) => {
                 chrome.notifications.create(null, {
                   type: 'basic',
-                  iconUrl: 'img/icon.png',
+                  iconUrl: 'images/icon16.png',
                   title: '上传全量书签错误',
                   message: error
                 })
@@ -205,7 +326,7 @@ function Github() {
               .then((response) => {
                 chrome.notifications.create(null, {
                   type: 'basic',
-                  iconUrl: 'img/icon.png',
+                  iconUrl: 'images/icon16.png',
                   title: '上传全量书签',
                   message: '成功'
                 })
@@ -328,7 +449,7 @@ function Github() {
               console.log('github delete success' + JSON.stringify(response))
               chrome.notifications.create(null, {
                 type: 'basic',
-                iconUrl: 'img/icon.png',
+                iconUrl: 'images/icon16.png',
                 title: '书签删除',
                 message: '远程书签 ' + filepath + ' 删除完毕！'
               })
