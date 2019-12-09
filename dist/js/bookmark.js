@@ -4,7 +4,7 @@ function clearBookmarks() {
         removeall(re);
         chrome.notifications.create(null, {
             type: 'basic',
-            iconUrl: 'img/icon.png',
+            iconUrl: 'images/icon16.png',
             title: '书签',
             message: '清空完毕'
         })

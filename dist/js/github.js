@@ -113,7 +113,9 @@ function Github() {
             element.appendChild(op);
           })
 
-          elenum.innerText = result.length
+          if (elenum !== '') {
+            elenum.innerText = result.length
+          }
         })
     })
   }
@@ -268,7 +270,7 @@ function Github() {
   }
 
   // todo 远程同步
-  this.updateTags = function (filepath, message) {
+  this.updateTags = function (filepath) {
     let _this = this
     chrome.storage.local.get(this.key, function (result) {
       // _this.create(filepath)
@@ -302,7 +304,7 @@ function Github() {
             // 'content': window.btoa(encodeURIComponent(JSON.stringify(re))),
             // 'content': window.btoa(unescape(encodeURIComponent(JSON.stringify(re)))),
             var data = {
-              'message': '全量同步bookmarks ' + message,
+              'message': '全量同步bookmarks ' + getDate(),
               'content': window.btoa(encodeURIComponent(JSON.stringify(re))),
               'sha': result['sha']
             }

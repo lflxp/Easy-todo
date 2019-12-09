@@ -36,10 +36,11 @@
     },
     mounted() {
       let _this = this
-      let key = ['username', 'repos', 'token']
+      let key = ['username', 'repos', 'token', 'localnum']
       let username;
       let repos;
       let token;
+      let localnum;
       // let localnum;
       // let bg = chrome.extension.getBackgroundPage();
 
@@ -75,10 +76,17 @@
       //   });
       // });
 
+      let bg = chrome.extension.getBackgroundPage();
+
       chrome.storage.local.get(key, function (result) {
         username = result.username;
         repos = result.repos;
         token = result.token;
+        localnum = result.localnum;
+
+        if (localnum === '' || localnum === undefined) {
+          bg.countBookmarks(document.querySelector('#count-local'))
+        }
         
         _this.ruleForm.url = 'https://github.com/' + username + '/' + repos
         _this.ruleForm.token = token
