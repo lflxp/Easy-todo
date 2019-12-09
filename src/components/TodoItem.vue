@@ -105,8 +105,9 @@
 				this.setStore();
 			},
 			setStore(){
-				const app = this.$root.$children[0];
-				app.setStore()
+				// const app = this.$root.$children[0];
+				// app.setStore()
+				this.$emit('saved')
 			}
 		}
 	}

@@ -89,9 +89,9 @@
             </el-col>
         </el-row>
         
-        <el-row type="flex" justify="space-between" :gutter="20" style="margin-top: 20px" v-if="show">
+        <el-row type="flex" justify="space-between" :gutter="20" style="margin-top: 20px">
           <el-col :span="8" v-for="(v, k) in store">
-            <todo-item :type="k" :data="v"></todo-item>
+            <todo-item :type="k" :data="v" @saved="setStore"></todo-item>
           </el-col>
         </el-row>
 
@@ -158,7 +158,6 @@ export default {
             this.online = state
         },
         upload() {
-            console.log('upload')
             storage.get('easyTodoStorage').then(rs => {
                 let files = document.getElementById('todo_filename').value
                 if (files !== '' && files !== undefined) {
@@ -203,11 +202,7 @@ export default {
                 let bg = chrome.extension.getBackgroundPage()
                 let github = new bg.Github()
                 github.getTodo('todo/' + files,storage)
-                this.show = false
-                this.$nextTick(()=>{
-                    this.init()
-                    this.show = true
-                })
+
                 this.$message({
                     type:'success',
                     message: '下载同步完成'
