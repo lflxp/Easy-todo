@@ -21,56 +21,16 @@
     </el-row>
     <el-row :gutter="20">
       <el-col :span="6">
-        <el-popover
-          placement="top"
-          width="160"
-          v-model="v1">
-          <p>确定上传吗？</p>
-          <div style="text-align: right; margin: 0">
-            <el-button size="mini" type="text" @click="v1 = false">取消</el-button>
-            <el-button type="primary" size="mini" id="upload">确定</el-button>
-          </div>
-          <el-button type="primary" slot="reference" style="width: 100%;">全量同步上传</el-button>
-        </el-popover>
+        <el-button type="primary" style="width: 100%;" icon="el-icon-upload2" id="upload">全量同步上传</el-button>
       </el-col>
       <el-col :span="6">
-        <el-popover
-          placement="top"
-          width="160"
-          v-model="v2">
-          <p>确定全量同步下载吗？</p>
-          <div style="text-align: right; margin: 0">
-            <el-button size="mini" type="text" @click="v2 = false">取消</el-button>
-            <el-button type="primary" size="mini" id="download">确定</el-button>
-          </div>
-          <el-button type="success" style="width: 100%;" slot="reference">全量同步下载</el-button>
-        </el-popover>
+        <el-button type="success" style="width: 100%;" icon="el-icon-download" id="download">全量同步下载</el-button>
       </el-col>
       <el-col :span="6">
-        <el-popover
-          placement="top"
-          width="160"
-          v-model="v3">
-          <p>确定删除远程书签吗？</p>
-          <div style="text-align: right; margin: 0">
-            <el-button size="mini" type="text" @click="v3 = false">取消</el-button>
-            <el-button type="primary" size="mini" id="clearonline">确定</el-button>
-          </div>
-          <el-button type="danger" style="width: 100%;" slot="reference">删除远程书签</el-button>
-        </el-popover>
+        <el-button type="danger" style="width: 100%;" id="clearonline">删除远程书签</el-button>
       </el-col>
       <el-col :span="6">
-        <el-popover
-          placement="top"
-          width="160"
-          v-model="v4">
-          <p>确定删除本地书签吗？</p>
-          <div style="text-align: right; margin: 0">
-            <el-button size="mini" type="text" @click="v4 = false">取消</el-button>
-            <el-button type="primary" size="mini" id="clear">确定</el-button>
-          </div>
-          <el-button type="danger" style="width: 100%;" slot="reference">删除本地书签</el-button>
-        </el-popover>
+        <el-button type="danger" style="width: 100%;" id="clear">删除本地书签</el-button>
       </el-col>
     </el-row>
   </div>
@@ -80,10 +40,6 @@
   export default {
     data() {
       return {
-        v1: false,
-        v2: false,
-        v3: false,
-        v4: false,
         value: '',
         form: {
           name: '',
@@ -103,7 +59,6 @@
       document.getElementById('clear').onclick = function () {
         // let bg = chrome.extension.getBackgroundPage();
         bg.clearBookmarks();
-        this.v4 = false
       }
 
       // 删除远程书签
@@ -116,7 +71,6 @@
         } else {
           alert('未选定文件名')
         }
-        this.v3 = false
       }
 
       // 全量同步上传
@@ -129,7 +83,6 @@
         } else {
           alert('未选定文件名')
         }
-        this.v1 = false
       }
 
       // 全量同步下载
@@ -142,7 +95,6 @@
         } else {
           alert('未选定文件名')
         }
-        this.v2 = false
       }
 
       // let bg = chrome.extension.getBackgroundPage()
