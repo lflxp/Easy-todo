@@ -15,11 +15,7 @@ Easy todo
 
 ##### 插件主界面
 
-![](http://opj15jbpo.bkt.clouddn.com/17-5-30/41140726.jpg)
-
-##### 提醒通知
-
-![](http://opj15jbpo.bkt.clouddn.com/17-5-30/19073791.jpg)
+![](./docs/main.png)
 
 ### 功能介绍
 
