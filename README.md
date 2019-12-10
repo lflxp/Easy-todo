@@ -19,7 +19,7 @@ Easy todo
 
 ##### 插件主界面
 
-![](./docs/main.png)
+![](https://github.com/lflxp/Easy-todo/blob/master/docs/main.png)
 
 ### 功能介绍
 
