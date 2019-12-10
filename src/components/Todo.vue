@@ -67,7 +67,6 @@
                     class="top-input"
                     @keyup.enter.native="doConfirm(content)"
                     :class="selectClass"
-                    icon="edit"
                     :on-icon-click="showTextArea">
                 <el-select v-model="selectClass" slot="prepend">
                     <el-option label="记录" value="a_info"></el-option>

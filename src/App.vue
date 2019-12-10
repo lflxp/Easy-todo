@@ -9,7 +9,7 @@
 			<book-mark></book-mark>
 		</el-tab-pane>
 		<el-tab-pane label="云笔记" name="fourth">
-			<markdown-editor v-model="content"/>
+			<note-book></note-book>
 		</el-tab-pane>
 		<el-tab-pane label="权限管理" name="second">
 			<login></login>
@@ -26,7 +26,7 @@
 	import Login from './components/Login'
 	import BookMark from './components/BookMark'
 	import Todo from './components/Todo'
-	import MarkdownEditor from '@/components/markdown'
+	import NoteBook from './components/NoteBook'
 	
 	export default {
 		name: 'app',
@@ -34,11 +34,10 @@
 			Login,
 			BookMark,
 			Todo,
-			MarkdownEditor
+			NoteBook
 		},
 		data() {
 			return {
-				content: '',
         		activeName: 'first'
 			}
 		},
