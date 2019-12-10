@@ -11,7 +11,11 @@ Easy todo
 2. 新增drag拖拽功能
 3. 测试vue功能
 
-### 预览
+### 功能
+
+1. Chrome-extension 书签管理
+2. TODO-LIST 管理
+3. 云笔记（待做）
 
 ##### 插件主界面
 
