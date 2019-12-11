@@ -89,7 +89,7 @@
         </el-row>
         
         <el-row type="flex" justify="space-between" :gutter="20" style="margin-top: 20px">
-          <el-col :span="8" v-for="(v, k) in store">
+          <el-col :span="8" v-for="(v, k) in store" :key="k">
             <todo-item :type="k" :data="v" @saved="setStore"></todo-item>
           </el-col>
         </el-row>

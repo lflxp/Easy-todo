@@ -1,6 +1,6 @@
 <template>
   <div class="markdown-wrapper">
-    <textarea ref="editor"></textarea>
+    <textarea ref="editor" v-model="value"></textarea>
   </div>
 </template>
 
@@ -22,7 +22,7 @@ export default {
     },
     localCache: {
       type: Boolean,
-      default: true
+      default: false
     }
   },
   data () {
