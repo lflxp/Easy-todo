@@ -22,7 +22,7 @@ export default {
     },
     localCache: {
       type: Boolean,
-      default: false
+      default: true 
     }
   },
   data () {

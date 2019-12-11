@@ -1,13 +1,13 @@
 <template>
 <div>
+  <el-button @click="newone()" size="mini" style="margin-bottom: 10px" type="success">新增</el-button>
   <el-table
     v-if="show1"
-    element-loading-text="Loading"
+    element-loading-text="加载中..."
     v-loading="listLoading"
     :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
     style="width: 100%;margin-bottom: 20px;"
     row-key="id"
-    border
     lazy
     :load="load"
     :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
@@ -31,16 +31,45 @@
       prop="html_url"
       label="在线查看">
       <template slot-scope="scope">
-        <a :href="scope.row.html_url" target="_blank">查看</a>
+        <el-popover trigger="hover" placement="right">
+          <p>{{ scope.row.html_url }}</p>
+          <div slot="reference" class="name-wrapper">
+            <a :href="scope.row.html_url" target="_blank">查看</a>
+          </div>
+        </el-popover>
       </template>
     </el-table-column>
     <el-table-column
       prop="path"
       label="路径">
+      <template slot-scope="scope">
+        <el-popover trigger="hover" placement="top">
+          <p>GIT_URL: {{ scope.row.git_url }}</p>
+          <p>URL: {{ scope.row.url }}</p>
+          <div slot="reference" class="name-wrapper">
+            <el-tag size="medium" type="danger">{{ scope.row.path }}</el-tag>
+          </div>
+        </el-popover>
+      </template>
     </el-table-column>
     <el-table-column
       prop="size"
       label="文件大小">
+      <template slot-scope="scope">
+        <el-popover trigger="hover" placement="top">
+          <p>SHA: {{ scope.row.sha }}</p>
+          <div slot="reference" class="name-wrapper">
+            <el-tag size="medium" type="success">{{ scope.row.size }}</el-tag>
+          </div>
+        </el-popover>
+      </template>
+    </el-table-column>
+    <el-table-column
+      prop="op"
+      label="操作">
+      <template slot-scope="scope">
+        <el-button type="danger" size="mini" @click="deleted(scope.row)">删除</el-button>
+      </template>
     </el-table-column>
   </el-table>
   <div style="text-align: center;margin-top: 30px;">
@@ -51,10 +80,11 @@
       :page-sizes="[5,10, 20, 50, 100, 200, 300, 400]"
       :page-size="pagesize"
       :total="total"
+      @current-change="cChange"
       :current-page="currentPage">
     </el-pagination>
   </div>
-  <el-dialog :visible.sync="dialogTableVisible" :fullscreen="true">
+  <el-dialog :visible.sync="dialogTableVisible" width="90%" top="0" :show-close="false">
     <markdown-editor v-model="content" v-if="showmarkdown"/>
     <div slot="footer" class="dialog-footer">
       <el-input placeholder="请输入内容" v-model="currentPath" style="margin-bottom: 20px">
@@ -74,6 +104,7 @@
     },
     data() {
       return {
+        visible: false,
         input1: '',
         currentSha: '',
         currentPath: '',
@@ -118,18 +149,75 @@
           name: '王小虎',
           address: '上海市普陀区金沙江路 1516 弄'
         }],
+        notebook: '',
         url: 'https://api.github.com',
-        user: 'lflxp',
-        repos: 'tags',
+        user: '',
+        repos: '',
         token: '',
-        headers: { 'Authorization': 'token ' + this.token, 'Content-type': 'application/json' },
         sha: ''
       }
     },
     mounted() {
-      this.get()
+      this.init()
     },
     methods: {
+      deleted(row) {
+        var data = {
+          'message': 'delete ' + row['path'],
+          'branch': 'master',
+          'sha': row['sha']
+        }
+
+        fetch(this.url + '/repos/' + this.user + '/' + this.repos + '/contents/' + row['path'], {
+          method: 'DELETE',
+          body: JSON.stringify(data),
+          headers: new Headers({
+            'Content-Type': 'application/json',
+            'Authorization': 'token ' + this.token
+          })
+        }).then(res => res.json())
+        .catch(error => console.error('Error:', error))
+        .then((response) => {
+          console.log('github delete success' + JSON.stringify(response))
+          chrome.notifications.create(null, {
+            type: 'basic',
+            iconUrl: 'images/icon16.png',
+            title: 'NoteBook删除',
+            message: '远程NoteBook ' + row['path'] + ' 删除完毕！'
+          })
+        })
+      },
+      newone() {
+        this.content = ''
+        this.currentPath = this.notebook+'/'
+        this.dialogTableVisible = true
+        this.showmarkdown = false
+        this.$nextTick(() => {
+          this.showmarkdown = true
+        })
+      },
+      init() {
+        let _this = this
+        let key = ['username', 'repos', 'token', 'notebook']
+        let username;
+        let repos;
+        let token;
+        let localnum;
+        let notebook;
+
+        chrome.storage.local.get(key, function (result) {
+          username = result.username;
+          repos = result.repos;
+          token = result.token;
+          notebook = result.notebook;
+
+          _this.user = username
+          _this.repos = repos
+          _this.token = token
+          _this.notebook = notebook
+          _this.get()
+        })
+      },
       updates() {
         this.dialogTableVisible = false
         // chrome.bookmarks.getChildren('1',(re) => {
@@ -151,19 +239,21 @@
           chrome.notifications.create(null, {
             type: 'basic',
             iconUrl: 'images/icon16.png',
-            title: '上传全量书签错误',
+            title: '更新文件错误',
             message: error
           })
         })
         .then((response) => {
-          alert('ok',response)
           chrome.notifications.create(null, {
             type: 'basic',
             iconUrl: 'images/icon16.png',
-            title: '上传全量书签',
-            message: '成功'
+            title: '更新notebook',
+            message: '成功 ' + this.currentPath
           })
         })
+      },
+      cChange(cpage) {
+        this.currentPage = cpage
       },
       handleSizeChange(size) {
         this.pagesize = size
@@ -190,7 +280,7 @@
           })
       },
       get() {
-        fetch(this.url + '/repos/' + this.user + '/' + this.repos + '/contents/notebook', {
+        fetch(this.url + '/repos/' + this.user + '/' + this.repos + '/contents/' + this.notebook, {
           method: 'GET',
           headers: new Headers({
             'Content-Type': 'application/json',

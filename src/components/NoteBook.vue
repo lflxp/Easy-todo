@@ -1,7 +1,5 @@
 <template>
     <div>
-        <el-page-header @back="goBack" content="详情页面">
-        </el-page-header>
         <!-- <el-button @click="get">get</el-button>
         <el-button @click="gettree">tree</el-button>
         <el-button @click="gettreer">treer</el-button> -->

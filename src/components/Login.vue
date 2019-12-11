@@ -6,6 +6,9 @@
         <el-form-item label="私有Token" prop="token">
             <el-input type="password" v-model="ruleForm.token"></el-input>
         </el-form-item>
+        <el-form-item label="笔记本目录" prop="notebook">
+            <el-input type="text" v-model="ruleForm.notebook"></el-input>
+        </el-form-item>
         <el-form-item>
             <el-button type="primary" @click="submitForm('ruleForm')">保存配置</el-button>
             <el-button @click="resetForm('ruleForm')">重置</el-button>
@@ -20,7 +23,8 @@
       return {
         ruleForm: {
           url: '',
-          token: ''
+          token: '',
+          notebook: ''
         },
         rules: {
           url: [
@@ -30,51 +34,22 @@
           token: [
             { required: true, message: '请输入私有访问接口Token', trigger: 'blur' },
             { min: 3, max: 100, message: '请输入私有访问接口Token', trigger: 'blur' }
+          ],
+          notebook: [
+            { required: true, message: '请输入notebook项目目录', trigger: 'blur' },
+            { min: 3, max: 100, message: '请输入notebook项目目录', trigger: 'blur' }
           ]
         }
       };
     },
     mounted() {
       let _this = this
-      let key = ['username', 'repos', 'token', 'localnum']
+      let key = ['username', 'repos', 'token', 'localnum', 'notebook']
       let username;
       let repos;
       let token;
       let localnum;
-      // let localnum;
-      // let bg = chrome.extension.getBackgroundPage();
-
-      // storage.get('username').then(result => {
-      //   if (result !== undefined) {
-      //     username = result
-      //   }
-      //   storage.get('repos').then(result => {
-      //     if (result !== undefined) {
-      //       repos = result
-      //     }
-      //     storage.get('token').then(result => {
-      //       if (result !== undefined) {
-      //         token = result
-      //       }
-      //       if (token === '' || token === undefined) {
-      //         this.$message({
-      //           type: 'warning',
-      //           message: '未配置认证信息'
-      //         })
-      //       } else {
-      //         this.ruleForm.url = 'https://github.com/' + username + '/' + repos
-      //         this.ruleForm.token = token
-      //         this.$message({
-      //           type: 'success',
-      //           message: '配置认证信息成功' + JSON.stringify(storage)
-      //         })
-      //         storage.get('easyTodoStorage').then(rs => {
-      //           alert(JSON.stringify(rs))
-      //         })
-      //       }
-      //     });
-      //   });
-      // });
+      let notebook;
 
       let bg = chrome.extension.getBackgroundPage();
 
@@ -83,6 +58,7 @@
         repos = result.repos;
         token = result.token;
         localnum = result.localnum;
+        notebook = result.notebook;
 
         if (localnum === '' || localnum === undefined) {
           bg.countBookmarks(document.querySelector('#count-local'))
@@ -90,6 +66,7 @@
         
         _this.ruleForm.url = 'https://github.com/' + username + '/' + repos
         _this.ruleForm.token = token
+        _this.ruleForm.notebook = notebook
       })
 
       // 获取目录
@@ -106,10 +83,11 @@
             let username = tmp[tmp.length - 2]
             let repos = tmp[tmp.length - 1]
             let token = this.ruleForm.token
+            let notebook = this.ruleForm.notebook
 
-            storage.set({ 'username': username, 'repos': repos, 'token': token })
+            storage.set({ 'username': username, 'repos': repos, 'token': token, 'notebook': notebook })
             
-            chrome.storage.local.set({ 'username': username, 'repos': repos, 'token': token }, () => {
+            chrome.storage.local.set({ 'username': username, 'repos': repos, 'token': token, 'notebook': notebook }, () => {
               let bg = chrome.extension.getBackgroundPage()
               let github = new bg.Github()
               github.create('todo/create')
