@@ -10,6 +10,8 @@
     row-key="id"
     lazy
     :load="load"
+    size="mini"
+    tooltip-effect="dark"
     :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
     <!-- <el-table-column
       prop="type"
@@ -44,8 +46,7 @@
       label="路径">
       <template slot-scope="scope">
         <el-popover trigger="hover" placement="top">
-          <p>GIT_URL: {{ scope.row.git_url }}</p>
-          <p>URL: {{ scope.row.url }}</p>
+          <p>{{ scope.row.path }}</p>
           <div slot="reference" class="name-wrapper">
             <el-tag size="medium" type="danger">{{ scope.row.path }}</el-tag>
           </div>
@@ -189,7 +190,7 @@
       },
       newone() {
         this.content = ''
-        this.currentPath = this.notebook+'/'
+        this.currentPath = ''
         this.dialogTableVisible = true
         this.showmarkdown = false
         this.$nextTick(() => {
@@ -222,12 +223,12 @@
         this.dialogTableVisible = false
         // chrome.bookmarks.getChildren('1',(re) => {
         var data = {
-          'message': '更新文件 ' + this.currentPath + this.currentSha,
+          'message': '更新文件 ' + this.notebook + '/' +this.currentPath + this.currentSha,
           'content': window.btoa(unescape(encodeURIComponent(this.content))),
           'sha': this.currentSha
         }
 
-        fetch(this.url + '/repos/' + this.user + '/' + this.repos + '/contents/' + this.currentPath, {
+        fetch(this.url + '/repos/' + this.user + '/' + this.repos + '/contents/' + this.notebook+ '/' + this.currentPath, {
           method: 'PUT',
           body: JSON.stringify(data),
           headers: new Headers({
@@ -248,7 +249,7 @@
             type: 'basic',
             iconUrl: 'images/icon16.png',
             title: '更新notebook',
-            message: '成功 ' + this.currentPath
+            message: '成功 ' + this.notebook + '/' +this.currentPath
           })
         })
       },
@@ -271,7 +272,7 @@
             console.log('getContents',result)
             this.dialogTableVisible = true
             this.content = decodeURIComponent(escape(window.atob(result['content'])))
-            this.currentPath = path
+            this.currentPath = path.replace('notebook/','')
             this.currentSha = sha
             this.showmarkdown = false
             this.$nextTick(() => {
