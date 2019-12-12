@@ -1,4 +1,3 @@
-![](http://opj15jbpo.bkt.clouddn.com/17-5-30/1324633.jpg)
 
 Easy todo
 ---
@@ -15,11 +14,14 @@ Easy todo
 
 1. Chrome-extension 书签管理
 2. TODO-LIST 管理
-3. 云笔记（待做）
+3. 云笔记
 
 ##### 插件主界面
 
-![](https://github.com/lflxp/Easy-todo/blob/master/docs/main.png)
+![](./docs/main.png)
+![](./docs/bookmark.png)
+![](./docs/right.png)
+![](./docs/privilege.png)
 
 ### 功能介绍
 
@@ -31,6 +33,6 @@ Easy todo
 
 您可以下载或者克隆本仓库，打开谷歌浏览器，进入扩展程序，勾选`开发者模式`，点击`加载已解压的扩展程序`，选择本仓库的`dist`文件夹
 
-![](http://opj15jbpo.bkt.clouddn.com/17-5-30/65204574.jpg)
+# 帮助
 
-如果你曾经发布过 chrome 应用并且想帮我发布一下本插件至 chrome 商店，欢迎联系我: lavyun@163.com
+如果有问题或者技术交流，请发邮箱联系: 382023823@qq.com
