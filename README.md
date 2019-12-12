@@ -1,4 +1,3 @@
-![](http://opj15jbpo.bkt.clouddn.com/17-5-30/1324633.jpg)
 
 Easy todo
 ---
@@ -15,11 +14,14 @@ Easy todo
 
 1. Chrome-extension 书签管理
 2. TODO-LIST 管理
-3. 云笔记（待做）
+3. 云笔记
 
 ##### 插件主界面
 
-![](https://github.com/lflxp/Easy-todo/blob/master/docs/main.png)
+![](./docs/main.png)
+![](./docs/bookmark.png)
+![](./docs/right.png)
+![](./docs/privilege.png)
 
 ### 功能介绍
 
