@@ -1,6 +1,11 @@
 <template>
 <div>
-  <el-button @click="newone()" size="mini" style="margin-bottom: 10px" type="success">新增</el-button>
+  <div style="margin-bottom: 15px;">
+    <el-input placeholder="请输入内容" v-model="input1" @keyup.enter.native="searched()">
+      <el-button @click="newone()" slot="prepend">新增</el-button>
+      <el-button slot="append" @click="searched()">搜索</el-button>
+    </el-input>
+  </div>
   <el-table
     v-if="show1"
     element-loading-text="加载中..."
@@ -25,7 +30,7 @@
       sortable
       width="180">
       <template slot-scope="scope">
-        <el-button type="text" @click="getContents(scope.row.path,scope.row.sha)" v-if="scope.row.type === 'file'?true: false">{{ scope.row.name }}</el-button>
+        <el-button type="text" @click="getContents(scope.row.path,scope.row.sha)" v-if="scope.row.hasChildren === true?false: true">{{ scope.row.name }}</el-button>
         <span v-else>{{ scope.row.name }}</span>
       </template>
     </el-table-column>
@@ -86,12 +91,16 @@
     </el-pagination>
   </div>
   <el-dialog :visible.sync="dialogTableVisible" width="90%" top="0" :show-close="false">
+    <div slot="title">
+      <el-tooltip class="item" effect="dark" content="路径分层用 / 分割，最多一级路径，eg: 笔记/20190801.md" placement="bottom">
+        <el-input placeholder="请输入搜索内容，in:file,name,description,readme" v-model="currentPath">
+          <template slot="prepend">文件路径</template>
+          <el-button slot="append" @click="updates()">提交</el-button>
+        </el-input>
+      </el-tooltip>
+    </div>
     <markdown-editor v-model="content" v-if="showmarkdown"/>
     <div slot="footer" class="dialog-footer">
-      <el-input placeholder="请输入内容" v-model="currentPath" style="margin-bottom: 20px">
-        <template slot="prepend">文件路径</template>
-        <el-button slot="append" @click="updates()">提交</el-button>
-      </el-input>
       <el-button @click="dialogTableVisible = false" type="primary" style="width: 100%">取 消</el-button>
     </div>
   </el-dialog>
@@ -160,14 +169,68 @@
     },
     mounted() {
       this.init()
+      // this.get()
     },
     methods: {
+      searched() {
+        if (this.input1 === '') {
+          this.get()
+        } else {
+          // fetch(this.url + '/search/code?q=' + this.input1 + '+in:file,name,description+repo:' + this.user + '/' + this.repos, {
+          fetch(this.url + '/search/code?q=' + this.input1 + '+in:file,name,description,readme+repo:' + this.user + '/' + this.repos, {
+            method: 'GET',
+            headers: new Headers({
+              'Content-Type': 'application/json',
+              'Authorization': 'token ' + this.token
+            })
+          }).then(res => res.json())
+          .catch(error => console.error('Error:', error))
+          .then((response) => {
+            console.log('github delete success',response)
+            
+            if (response.total_count !== 0) {
+              this.$message({
+                type: 'success',
+                message: '找到结果数: ' + response.total_count
+              })
+              this.total = response.total_count
+              this.listLoading = SVGComponentTransferFunctionElement
+              this.currentPage = 1
+              this.tableData = []
+              response.items.forEach((data,index) => {
+                let tmp = data
+                tmp['id'] = index
+                this.tableData.push(tmp)
+              })
+              this.total = this.tableData.length
+              this.show1 = false
+              this.$nextTick(()=>{
+                this.show1 = true
+                this.listLoading = false
+              })
+            } else {
+              this.$message({
+                type: 'warning',
+                message: '未找到任何结果'
+              })
+              this.tableData = []
+              this.total = 0
+              this.currentPage = 1
+            }
+          })
+        }
+      },
       deleted(row) {
         var data = {
           'message': 'delete ' + row['path'],
           'branch': 'master',
           'sha': row['sha']
         }
+
+        this.$message({
+          type: 'success',
+          message: '已提交删除操作'
+        })
 
         fetch(this.url + '/repos/' + this.user + '/' + this.repos + '/contents/' + row['path'], {
           method: 'DELETE',
@@ -227,6 +290,11 @@
           'content': window.btoa(unescape(encodeURIComponent(this.content))),
           'sha': this.currentSha
         }
+
+        this.$message({
+          type: 'success',
+          message: '已提交更新操作'
+        })
 
         fetch(this.url + '/repos/' + this.user + '/' + this.repos + '/contents/' + this.notebook+ '/' + this.currentPath, {
           method: 'PUT',

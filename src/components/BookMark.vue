@@ -54,11 +54,16 @@
       }
     },
     mounted() {
+      let _this = this
       let bg = chrome.extension.getBackgroundPage();
       // 清空标签
       document.getElementById('clear').onclick = function () {
         // let bg = chrome.extension.getBackgroundPage();
         bg.clearBookmarks();
+        _this.$message({
+          type: 'success',
+          message: '已提交本地清空操作'
+        })
       }
 
       // 删除远程书签
@@ -68,6 +73,10 @@
           // let bg = chrome.extension.getBackgroundPage()
           let github = new bg.Github()
           github.delete('bookmarks/' + files, '删除' + files)
+          _this.$message({
+            type: 'success',
+            message: '已提交远程清空操作'
+          })
         } else {
           alert('未选定文件名')
         }
@@ -80,6 +89,10 @@
           // let bg = chrome.extension.getBackgroundPage()
           let github = new bg.Github()
           github.updateTags('bookmarks/' + files)
+          _this.$message({
+            type: 'success',
+            message: '已提交同步上传操作'
+          })
         } else {
           alert('未选定文件名')
         }
@@ -92,6 +105,10 @@
           // let bg = chrome.extension.getBackgroundPage()
           let github = new bg.Github()
           github.get('bookmarks/' + files)
+          _this.$message({
+            type: 'success',
+            message: '已提交同步下载操作'
+          })
         } else {
           alert('未选定文件名')
         }
