@@ -21,10 +21,10 @@
     </el-row>
     <el-row :gutter="20">
       <el-col :span="6">
-        <el-button type="primary" style="width: 100%;" icon="el-icon-upload2" id="upload">全量同步上传</el-button>
+        <el-button type="primary" style="width: 100%;" id="upload">全量同步上传</el-button>
       </el-col>
       <el-col :span="6">
-        <el-button type="success" style="width: 100%;" icon="el-icon-download" id="download">全量同步下载</el-button>
+        <el-button type="success" style="width: 100%;" id="download">全量同步下载</el-button>
       </el-col>
       <el-col :span="6">
         <el-button type="danger" style="width: 100%;" id="clearonline">删除远程书签</el-button>

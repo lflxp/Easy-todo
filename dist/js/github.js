@@ -106,11 +106,13 @@ function Github() {
         .catch(error => console.error('Error:', error))
         .then((result) => {
           result.forEach((vds) => {
-            var op = document.createElement('option');
-            op.setAttribute('label', vds['name']);
-            op.setAttribute('value', vds['name']);
-            op.setAttribute('select', 'select')
-            element.appendChild(op);
+            if (vds.type === 'file') {
+              var op = document.createElement('option');
+              op.setAttribute('label', vds['name']);
+              op.setAttribute('value', vds['name']);
+              op.setAttribute('select', 'select')
+              element.appendChild(op);
+            }
           })
 
           if (elenum !== '') {

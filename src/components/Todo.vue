@@ -67,7 +67,6 @@
                     class="top-input"
                     @keyup.enter.native="doConfirm(content)"
                     :class="selectClass"
-                    icon="edit"
                     :on-icon-click="showTextArea">
                 <el-select v-model="selectClass" slot="prepend">
                     <el-option label="记录" value="a_info"></el-option>
@@ -90,7 +89,7 @@
         </el-row>
         
         <el-row type="flex" justify="space-between" :gutter="20" style="margin-top: 20px">
-          <el-col :span="8" v-for="(v, k) in store">
+          <el-col :span="8" v-for="(v, k) in store" :key="k">
             <todo-item :type="k" :data="v" @saved="setStore"></todo-item>
           </el-col>
         </el-row>

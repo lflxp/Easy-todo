@@ -17,7 +17,8 @@
 						<el-col :span="item.remind ? 14 : 22">
 							<p class="text-ellipsis" style="cursor: pointer"
 							   @click="item.showBody = !item.showBody; dateValueIndex = index">
-								<span :class="`el-icon-caret-${item.showBody ? 'bottom' : 'right'}`"></span>
+								<!-- <span :class="`el-icon-caret-${item.showBody ? 'bottom' : 'right'}`"></span> -->
+								<span style="font: bold;color: black;">{{ index }}.</span>
 								{{item.content}}
                             </p>
 						</el-col>
@@ -29,8 +30,9 @@
                               </span>
 						</el-col>
 						<el-col :span="2" class="text-right">
-                            <span class="el-icon-circle-cross" style="cursor: pointer"
-								  @click="deleteList(index)"></span>
+                            <span class="el-icon-circle-cross" style="cursor: pointer;font: bold;color: red;"
+								  @click="deleteList(index)">×</span>
+								  <!-- @click="deleteList(index)"></span> -->
 						</el-col>
 					</el-row>
 
