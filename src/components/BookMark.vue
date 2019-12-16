@@ -7,6 +7,7 @@
             <div class="counter">
               <div>本地有<strong id="count-local">--</strong>条书签</div>
               <div>线上有<strong id="count-repo">--</strong>个备份版本</div>
+              <div>当前远程版本<strong id="current-repo">--</strong></div>
             </div>
           </div>
         </section>
@@ -54,11 +55,13 @@
       }
     },
     mounted() {
+      this.getName()
       let _this = this
       let bg = chrome.extension.getBackgroundPage();
       // 清空标签
       document.getElementById('clear').onclick = function () {
         // let bg = chrome.extension.getBackgroundPage();
+        // _this.saveName(undefined)
         bg.clearBookmarks();
         _this.$message({
           type: 'success',
@@ -73,6 +76,7 @@
           // let bg = chrome.extension.getBackgroundPage()
           let github = new bg.Github()
           github.delete('bookmarks/' + files, '删除' + files)
+          // _this.saveName(undefined)
           _this.$message({
             type: 'success',
             message: '已提交远程清空操作'
@@ -89,6 +93,7 @@
           // let bg = chrome.extension.getBackgroundPage()
           let github = new bg.Github()
           github.updateTags('bookmarks/' + files)
+          _this.saveName(files)
           _this.$message({
             type: 'success',
             message: '已提交同步上传操作'
@@ -105,6 +110,7 @@
           // let bg = chrome.extension.getBackgroundPage()
           let github = new bg.Github()
           github.get('bookmarks/' + files)
+          _this.saveName(files)
           _this.$message({
             type: 'success',
             message: '已提交同步下载操作'
@@ -128,6 +134,19 @@
       // })
     },
     methods: {
+      saveName(name) {
+        chrome.storage.local.set({ 'reponame': name }, () => {
+          console.log('set  repo name ok')
+        })
+      },
+      getName() {
+        chrome.storage.local.get(['reponame'], (result) =>{
+          document.querySelector('#current-repo').innerText = result.reponame === undefined ? '无': result.reponame
+          if (result.reponame !== undefined) {
+            document.getElementById('filename').value = result.reponame
+          }
+        })
+      },
       onSubmit() {
         console.log('submit!');
       },

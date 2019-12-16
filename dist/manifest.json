@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "快人一步",
+  "name": "个人办公",
   "version": "1.0.2",
   "description": "一个简洁的个人办公插件",
   "icons": {
@@ -16,7 +16,7 @@
       "16": "images/icon16.png",
       "48": "images/icon48.png"
     },
-    "default_title": "快人一步",
+    "default_title": "个人办公",
     "default_popup": "index.html"
   },
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
@@ -25,10 +25,11 @@
     "storage",
     "notifications",
     "http://*/*",
-    "https://*/*"
+    "https://*/*",
+    "contextMenus"
   ],
   "background": {
-    "scripts": ["js/background.js", "js/github.js","js/bookmark.js"]
+    "scripts": ["js/background.js", "js/github.js","js/bookmark.js","js/bg.js"]
   },
   "content_scripts": [{
     "matches": ["*://*/*"],
@@ -36,5 +37,6 @@
     "run_at": "document_start",
     "all_frames": true
   }],
+  "omnibox": {"keyword": "go"},
   "homepage_url": "https://github.com/lflxp/Easy-todo"
 }
