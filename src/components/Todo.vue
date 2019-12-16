@@ -151,8 +151,21 @@ export default {
         let bg = chrome.extension.getBackgroundPage();
         let github = new bg.Github()
         github.getlist('todo/', document.querySelector('#todo_greetings'), '');
+        this.getName()
     },
     methods: {
+        saveName(name) {
+          chrome.storage.local.set({ 'todoname': name }, () => {
+            console.log('set  todoname name ok')
+          })
+        },
+        getName() {
+          chrome.storage.local.get(['todoname'], (result) =>{
+            if (result.todoname !== undefined) {
+              document.getElementById('todo_filename').value = result.todoname
+            }
+          })
+        },
         openonline(state) {
             this.online = state
         },
@@ -163,6 +176,7 @@ export default {
                     let bg = chrome.extension.getBackgroundPage()
                     let github = new bg.Github()
                     github.updateTodo('todo/' + files,rs)
+                    this.saveName(files)
                     this.v1 = false
                     this.$message({
                         type:'success',
@@ -201,6 +215,7 @@ export default {
                 let bg = chrome.extension.getBackgroundPage()
                 let github = new bg.Github()
                 github.getTodo('todo/' + files,storage)
+                this.saveName(files)
 
                 this.$message({
                     type:'success',
