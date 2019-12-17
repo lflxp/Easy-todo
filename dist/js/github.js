@@ -126,43 +126,66 @@ function Github() {
   this.get = function (filepath) {
     // 全量清空 然后再加载
     chrome.bookmarks.getTree((re) => {
-      removeall(re)
+      chrome.storage.local.set({ 'repostatus': false }, () => {
+        removeall(re)
 
-      chrome.storage.local.get(this.key, function (result) {
-        this.url = 'https://api.github.com'
-        this.user = result.username
-        this.repos = result.repos
-        this.token = result.token
-        this.headers = { 'Authorization': 'token ' + this.token, 'Content-type': 'application/json' }
-        if (this.user === '' || this.user === undefined) {
-          alert('未配置认证信息')
-          return
-        }
-
-        fetch(this.url + '/repos/' + this.user + '/' + this.repos + '/contents/' + filepath, {
-          method: 'GET',
-          headers: new Headers({
-            'Content-Type': 'application/json',
-            'Authorization': 'token ' + this.token
-          })
-        }).then(res => res.json())
-          .catch(error => console.error('Error:', error))
-          .then((result) => {
-            let info = JSON.parse(decodeURIComponent(window.atob(result['content'])))
-
-            try {
-              addAll(info[0].children, '')
-            } catch (e) {
-              // do nothing
-            } finally {
-              chrome.notifications.create(null, {
-                type: 'basic',
-                iconUrl: 'images/icon16.png',
-                title: '更新本地书签',
-                message: '同步完成 '
+        chrome.storage.local.get(this.key, (result) => {
+          this.url = 'https://api.github.com'
+          this.user = result.username
+          this.repos = result.repos
+          this.token = result.token
+          this.headers = { 'Authorization': 'token ' + this.token, 'Content-type': 'application/json' }
+          if (this.user === '' || this.user === undefined) {
+            alert('未配置认证信息')
+            chrome.storage.local.set({ 'repostatus': true }, () => {
+              // alert('未配置认证信息 true')
+              console.log('reset repostatus === true')
+            })
+            return
+          }
+  
+          fetch(this.url + '/repos/' + this.user + '/' + this.repos + '/contents/' + filepath, {
+            method: 'GET',
+            headers: new Headers({
+              'Content-Type': 'application/json',
+              'Authorization': 'token ' + this.token
+            })
+          }).then(res => res.json())
+            .catch(error => () => {
+              chrome.storage.local.set({ 'repostatus': true }, () => {
+                // alert('error true')
+                console.log('reset repostatus === true')
               })
-            }
-          })
+              console.error('Error:', error)
+            })
+            .then(async (result) => {
+              let info = JSON.parse(decodeURIComponent(window.atob(result['content'])))
+  
+              try {
+                await addAll(info[0].children, '')
+              } catch (e) {
+                // do nothing
+              } finally {
+                chrome.notifications.create(null, {
+                  type: 'basic',
+                  iconUrl: 'images/icon16.png',
+                  title: '切换等待20秒',
+                  message: '请勿执行书签操作，否则手工完成同步操作'
+                })
+                setTimeout(() => {
+                  chrome.storage.local.set({ 'repostatus': true }, () => {
+                    chrome.notifications.create(null, {
+                      type: 'basic',
+                      iconUrl: 'images/icon16.png',
+                      title: '更新本地书签完成',
+                      message: '启动书签自动同步功能'
+                    }) 
+                  })
+                },20000);
+                
+              }
+            })
+        })
       })
     })
   }

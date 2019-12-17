@@ -69,6 +69,10 @@
         _this.ruleForm.notebook = notebook
       })
 
+      chrome.storage.local.set({ 'repostatus': true }, () => {
+       console.log('init repostatus true')
+      })
+
       // 获取目录
       // let github = new bg.Github();
       // github.getlist('bookmarks/', $('#greetings'), $('#count-repo'));

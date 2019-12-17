@@ -85,32 +85,50 @@ function addAll(data, parentname) {
     })
 }
 
-// // onChanged自动提交
-// chrome.bookmarks.onChanged.addListener(function(id, changeInfo) {
-//     chrome.storage.local.get(['reponame'], (result) =>{
-//       if (result.reponame !== undefined) {
-//         let github = new Github()
-//         github.updateTags('bookmarks/' + result.reponame)
-//       }
-//     })
-// });
+// onChanged自动提交
+chrome.bookmarks.onChanged.addListener(function(id, changeInfo) {
+  // alert('onChnage ' + id);
+  chrome.storage.local.get(['reponame','repostatus'], (result) =>{
+    // alert('status '+result.reponame+' ' + result.repostatus)
+    if (result.reponame !== undefined && result.repostatus !== false) {
+      let github = new Github()
+      github.updateTags('bookmarks/' + result.reponame)
+    }
+  })
+});
 
-// // onCreated自动提交
-// chrome.bookmarks.onCreated.addListener(function(id, bookmark) {
-//   chrome.storage.local.get(['reponame'], (result) =>{
-//     if (result.reponame !== undefined) {
-//       let github = new Github()
-//       github.updateTags('bookmarks/' + result.reponame)
-//     }
-//   })
-// });
+// onCreated自动提交
+chrome.bookmarks.onCreated.addListener(function(id, bookmark) {
+  // alert('onCreated ' + id);
+  chrome.storage.local.get(['reponame','repostatus'], (result) =>{
+    // alert('status '+result.reponame+' ' + result.repostatus)
+    if (result.reponame !== undefined && result.repostatus !== false) {
+      let github = new Github()
+      github.updateTags('bookmarks/' + result.reponame)
+    }
+  })
+});
 
-// // onChildrenReordered自动提交
-// chrome.bookmarks.onChildrenReordered.addListener(function(id, reorderInfo) {
-//   chrome.storage.local.get(['reponame'], (result) =>{
-//     if (result.reponame !== undefined) {
-//       let github = new Github()
-//       github.updateTags('bookmarks/' + result.reponame)
-//     }
-//   })
-// });
+// onChildrenReordered自动提交
+chrome.bookmarks.onChildrenReordered.addListener(function(id, reorderInfo) {
+  // alert('onChildrenReordered ' + id);
+  chrome.storage.local.get(['reponame','repostatus'], (result) =>{
+    // alert('status '+result.reponame+' ' + result.repostatus)
+    if (result.reponame !== undefined && result.repostatus !== false) {
+      let github = new Github()
+      github.updateTags('bookmarks/' + result.reponame)
+    }
+  })
+});
+
+// onRemoved自动提交
+chrome.bookmarks.onRemoved.addListener(function(id, removeInfo) {
+  // alert('onRemoved ' + id);
+  chrome.storage.local.get(['reponame','repostatus'], (result) =>{
+    // alert('status '+result.reponame+' ' + result.repostatus)
+    if (result.reponame !== undefined && result.repostatus !== false) {
+      let github = new Github()
+      github.updateTags('bookmarks/' + result.reponame)
+    }
+  })
+});
