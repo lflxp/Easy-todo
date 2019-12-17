@@ -169,7 +169,7 @@ function Github() {
                 chrome.notifications.create(null, {
                   type: 'basic',
                   iconUrl: 'images/icon16.png',
-                  title: '切换等待20秒',
+                  title: '切换等待10秒',
                   message: '请勿执行书签操作，否则手工完成同步操作'
                 })
                 setTimeout(() => {
@@ -181,7 +181,7 @@ function Github() {
                       message: '启动书签自动同步功能'
                     }) 
                   })
-                },20000);
+                },10000);
                 
               }
             })
