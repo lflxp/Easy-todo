@@ -10,8 +10,11 @@ chrome.omnibox.onInputChanged.addListener((text, suggest) => {
 				if (data.url !== undefined) {
 					result[index] = { content: data.url, description: data.title }
 				}
-			})
-			suggest(result)
+            })
+            if (result !== undefined) {
+                console.log('result',result)
+			    suggest(result)
+            }
 		})
 	} catch (e) {
 		console.error('error ', e)
