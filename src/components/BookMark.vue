@@ -22,16 +22,16 @@
     </el-row>
     <el-row :gutter="20">
       <el-col :span="6">
-        <el-button type="primary" style="width: 100%;" id="upload">全量同步上传</el-button>
+        <el-button type="primary" style="width: 100%;" id="upload"  icon="el-icon-upload">全量同步上传</el-button>
       </el-col>
       <el-col :span="6">
-        <el-button type="success" style="width: 100%;" id="download">全量同步下载</el-button>
+        <el-button type="success" style="width: 100%;" id="download"  icon="el-icon-download">全量同步下载</el-button>
       </el-col>
       <el-col :span="6">
-        <el-button type="danger" style="width: 100%;" id="clearonline">删除远程书签</el-button>
+        <el-button type="danger" style="width: 100%;" id="clearonline"  icon="el-icon-delete">删除远程书签</el-button>
       </el-col>
       <el-col :span="6">
-        <el-button type="danger" style="width: 100%;" id="clear">删除本地书签</el-button>
+        <el-button type="danger" style="width: 100%;" id="clear"  icon="el-icon-delete">删除本地书签</el-button>
       </el-col>
     </el-row>
   </div>

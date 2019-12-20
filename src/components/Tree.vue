@@ -1,10 +1,12 @@
 <template>
 <div>
   <div style="margin-bottom: 15px;">
-    <el-input placeholder="请输入内容" v-model="input1" @keyup.enter.native="searched()">
-      <el-button @click="newone()" slot="prepend">新增</el-button>
-      <el-button slot="append" @click="searched()">搜索</el-button>
-    </el-input>
+    <el-tooltip class="item" effect="dark" content="路径分层用 / 分割，最多一级路径，eg: 笔记/20190801.md" placement="bottom">
+      <el-input placeholder="请输入搜索内容，in:file,name,description,readme" v-model="input1" @keyup.enter.native="searched()">
+        <el-button @click="newone()" slot="prepend" icon="el-icon-plus">新增</el-button>
+        <el-button slot="append" @click="searched()" icon="el-icon-search">搜索</el-button>
+      </el-input>
+    </el-tooltip>
   </div>
   <el-table
     v-if="show1"
@@ -93,9 +95,9 @@
   <el-dialog :visible.sync="dialogTableVisible" width="90%" top="0" :show-close="false">
     <div slot="title">
       <el-tooltip class="item" effect="dark" content="路径分层用 / 分割，最多一级路径，eg: 笔记/20190801.md" placement="bottom">
-        <el-input placeholder="请输入搜索内容，in:file,name,description,readme" v-model="currentPath">
-          <template slot="prepend">文件路径</template>
-          <el-button slot="append" @click="updates()">提交</el-button>
+        <el-input placeholder="请输入保存文件路径" v-model="currentPath">
+          <el-button slot="prepend" icon="el-icon-folder-opened">文件路径</el-button>
+          <el-button slot="append" @click="updates()" icon="el-icon-s-promotion">提交</el-button>
         </el-input>
       </el-tooltip>
     </div>

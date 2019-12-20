@@ -1,12 +1,12 @@
 <template>
     <div>
         <el-row :gutter="10" style="margin-bottom: 10px;" v-show="online">
-            <el-col :span="12">
-                    <input type="text" name="todo_greeting" id="todo_filename" list="todo_greetings" style="width: 100%;height: 35px;" placeholder="选取备份文件（可自定义输入）">
+            <el-col :span="15">
+                    <input type="text" name="todo_greeting" id="todo_filename" list="todo_greetings" style="width: 100%;" placeholder="选取备份文件（可自定义输入）">
                     <!-- 使用style="display:none;"将datalist元素设定为不显示 -->
                     <datalist id="todo_greetings" style="display:none;"></datalist>
             </el-col>
-            <el-col :span="3">
+            <!-- <el-col :span="3">
                 <el-popover
                     placement="top"
                     width="160"
@@ -18,7 +18,7 @@
                     </div>
                     <el-button type="primary" slot="reference" style="width: 100%">上传</el-button>
                 </el-popover>
-            </el-col>
+            </el-col> -->
             <el-col :span="3">
                 <el-popover
                     placement="top"
@@ -29,7 +29,7 @@
                         <el-button size="mini" type="text" @click="v2 = false">取消</el-button>
                         <el-button type="primary" size="mini" @click="download(content)">确定</el-button>
                     </div>
-                    <el-button type="success" slot="reference" style="width: 100%">下载</el-button>
+                    <el-button type="success" slot="reference" style="width: 100%" size="mini" icon="el-icon-download">下载</el-button>
                 </el-popover>
             </el-col>
             <el-col :span="3">
@@ -43,7 +43,7 @@
                         <el-button size="mini" type="text" @click="v4 = false">取消</el-button>
                         <el-button type="primary" size="mini" @click="clearonline()">确定</el-button>
                     </div>
-                    <el-button type="danger" slot="reference" style="width: 100%">远程清空</el-button>
+                    <el-button type="danger" slot="reference" style="width: 100%"  icon="el-icon-delete" size="mini">远程清空</el-button>
                 </el-popover>
             </el-col>
             <el-col :span="3">
@@ -56,7 +56,7 @@
                         <el-button size="mini" type="text" @click="v3 = false">取消</el-button>
                         <el-button type="primary" size="mini" @click="doClear()">确定</el-button>
                     </div>
-                    <el-button type="danger" slot="reference" style="width: 100%">本地清空</el-button>
+                    <el-button type="danger" slot="reference" style="width: 100%" icon="el-icon-delete" size="mini">本地清空</el-button>
                 </el-popover>
             </el-col>
         </el-row>
@@ -76,15 +76,27 @@
                 </el-input>
             </el-col>
             <el-col :span="3">
-                <el-button type="primary" @click="doConfirm(content)" style="width: 100%">确定</el-button>
+                <!-- <el-button type="primary" @click="doConfirm(content)" style="width: 100%">确定</el-button> -->
+                <el-popover
+                    placement="top"
+                    width="160"
+                    v-model="v1">
+                    <p>确定上传吗？</p>
+                    <div style="text-align: right; margin: 0">
+                        <el-button size="mini" type="text" @click="v1 = false">取消</el-button>
+                        <el-button type="primary" size="mini" @click="upload(content)">确定</el-button>
+                    </div>
+                    <el-button type="primary" slot="reference" style="width: 100%" icon="el-icon-upload">上传</el-button>
+                </el-popover>
             </el-col>
             <el-col :span="3">
-                <el-switch
+                <el-button type="success" @click="openonline" style="width: 100%">更多</el-button>
+                <!-- <el-switch
                     @change="openonline"
                     v-model="online"
                     active-color="#13ce66"
                     inactive-color="#ff4949">
-                </el-switch>
+                </el-switch> -->
             </el-col>
         </el-row>
         
@@ -166,8 +178,8 @@ export default {
             }
           })
         },
-        openonline(state) {
-            this.online = state
+        openonline() {
+            this.online = !this.online
         },
         upload() {
             storage.get('easyTodoStorage').then(rs => {
